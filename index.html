@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banana World — Origins</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --banana-yellow: #F5C518;
+      --deep-green: #1A3A2A;
+      --jungle-green: #2D6A4F;
+      --leaf-green: #52B788;
+      --cream: #FFF8E7;
+      --dark-brown: #3D1C02;
+      --gold: #D4A017;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--deep-green);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated leaf background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(82,183,136,.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 70%, rgba(45,106,79,.22) 0%, transparent 60%),
+        repeating-linear-gradient(
+          135deg,
+          transparent 0px,
+          transparent 40px,
+          rgba(255,255,255,.015) 40px,
+          rgba(255,255,255,.015) 41px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(26,58,42,.95), transparent);
+      backdrop-filter: blur(2px);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--banana-yellow);
+      letter-spacing: .04em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      position: relative;
+      transition: color .3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -4px;
+      width: 0; height: 1px;
+      background: var(--banana-yellow);
+      transition: width .35s ease;
+    }
+    .nav-links a:hover { color: var(--banana-yellow); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: var(--banana-yellow); }
+    .nav-links a.active::after { width: 100%; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 10vw;
+      overflow: hidden;
+    }
+
+    .hero-bg-banana {
+      position: absolute;
+      right: -4vw; top: 50%;
+      transform: translateY(-50%);
+      font-size: clamp(18rem, 30vw, 38rem);
+      opacity: .08;
+      user-select: none;
+      animation: floatBig 8s ease-in-out infinite;
+      line-height: 1;
+    }
+
+    @keyframes floatBig {
+      0%, 100% { transform: translateY(-50%) rotate(-12deg); }
+      50%       { transform: translateY(-53%) rotate(-8deg); }
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
+
+    .hero-eyebrow {
+      font-size: .85rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--leaf-green);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--cream);
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp .8s .4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--banana-yellow);
+    }
+
+    .hero-desc {
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: rgba(255,248,231,.75);
+      margin-bottom: 2.8rem;
+      max-width: 520px;
+      opacity: 0;
+      animation: fadeUp .8s .6s forwards;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      padding: .9rem 2.6rem;
+      background: var(--banana-yellow);
+      color: var(--dark-brown);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: .08em;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background .3s, transform .3s;
+      opacity: 0;
+      animation: fadeUp .8s .8s forwards;
+    }
+    .hero-cta:hover { background: var(--gold); transform: translateY(-2px); color: var(--dark-brown); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCROLL INDICATOR ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+      gap: .6rem; color: rgba(255,248,231,.4);
+      font-size: .7rem; letter-spacing: .25em; text-transform: uppercase;
+    }
+    .scroll-hint .line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, rgba(255,248,231,.4), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: .4; }
+      50%       { transform: scaleY(1.3); opacity: .8; }
+    }
+
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      position: relative; z-index: 2;
+      background: rgba(82,183,136,.1);
+      border-top: 1px solid rgba(82,183,136,.2);
+      border-bottom: 1px solid rgba(82,183,136,.2);
+      padding: 2.5rem 0;
+    }
+    .stat-item { text-align: center; padding: 1rem; }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--banana-yellow);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: .75rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--leaf-green);
+      margin-top: .5rem;
+    }
+
+    /* ── HISTORY SECTION ── */
+    .history-section {
+      position: relative; z-index: 2;
+      padding: 8rem 10vw;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: .7rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--banana-yellow);
+      border: 1px solid rgba(245,197,24,.3);
+      padding: .35rem 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 3rem;
+    }
+
+    .section-title .accent { color: var(--banana-yellow); font-style: italic; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 2px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--banana-yellow), transparent);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+      padding-left: 3rem;
+      position: relative;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity .6s, transform .6s;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px; top: 8px;
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--banana-yellow);
+      box-shadow: 0 0 12px rgba(245,197,24,.5);
+    }
+
+    .timeline-year {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--banana-yellow);
+      padding-top: .1rem;
+    }
+
+    .timeline-text h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: .5rem;
+      color: var(--cream);
+    }
+    .timeline-text p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: rgba(255,248,231,.65);
+      font-weight: 300;
+    }
+
+    /* ── CARD GRID ── */
+    .card-section {
+      position: relative; z-index: 2;
+      padding: 6rem 10vw;
+      background: rgba(26,58,42,.5);
+    }
+
+    .banana-card {
+      background: rgba(255,248,231,.04);
+      border: 1px solid rgba(255,248,231,.08);
+      border-radius: 4px;
+      padding: 2.5rem 2rem;
+      transition: background .35s, border-color .35s, transform .35s;
+      height: 100%;
+    }
+    .banana-card:hover {
+      background: rgba(245,197,24,.07);
+      border-color: rgba(245,197,24,.25);
+      transform: translateY(-6px);
+    }
+    .card-icon { font-size: 2.8rem; margin-bottom: 1.2rem; display: block; }
+    .banana-card h5 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--banana-yellow);
+      margin-bottom: .8rem;
+    }
+    .banana-card p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(255,248,231,.6);
+      font-weight: 300;
+    }
+
+    /* ── QUOTE BLOCK ── */
+    .quote-block {
+      position: relative; z-index: 2;
+      padding: 7rem 10vw;
+      text-align: center;
+    }
+    .big-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-style: italic;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--cream);
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+    .big-quote span { color: var(--banana-yellow); }
+    .quote-source {
+      font-size: .8rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--leaf-green);
+    }
+
+    /* ── PAGE NAV ── */
+    .page-nav {
+      position: relative; z-index: 2;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem 0 5rem;
+    }
+    .page-dot {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .8rem 1.8rem;
+      border: 1px solid rgba(255,255,255,.15);
+      text-decoration: none;
+      color: rgba(255,248,231,.6);
+      font-size: .8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      transition: all .3s;
+      border-radius: 2px;
+    }
+    .page-dot:hover { border-color: var(--banana-yellow); color: var(--banana-yellow); }
+    .page-dot.current { border-color: var(--banana-yellow); color: var(--banana-yellow); background: rgba(245,197,24,.08); }
+    .page-dot .num { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding: 2rem 10vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255,248,231,.3);
+      font-size: .8rem;
+      letter-spacing: .1em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">🍌 BANANA</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Origins</a></li>
+      <li><a href="nutrition.html">Nutrition</a></li>
+      <li><a href="culture.html">Culture</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-banana">🍌</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">The world's most popular fruit</p>
+      <h1 class="hero-title">The Golden<br/><em>Origins</em></h1>
+      <p class="hero-desc">
+        From ancient jungle floors to global supermarkets — the extraordinary journey
+        of Earth's most beloved fruit, stretching back over 10,000 years of human history.
+      </p>
+      <a href="#history" class="hero-cta">Explore the Story</a>
+    </div>
+    <div class="scroll-hint">
+      <div class="line"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-6 col-md-3"><div class="stat-item">
+          <div class="stat-number">10,000</div>
+          <div class="stat-label">Years of Cultivation</div>
+        </div></div>
+        <div class="col-6 col-md-3"><div class="stat-item">
+          <div class="stat-number">1,000+</div>
+          <div class="stat-label">Varieties Worldwide</div>
+        </div></div>
+        <div class="col-6 col-md-3"><div class="stat-item">
+          <div class="stat-number">150</div>
+          <div class="stat-label">Countries Growing</div>
+        </div></div>
+        <div class="col-6 col-md-3"><div class="stat-item">
+          <div class="stat-number">100B</div>
+          <div class="stat-label">Bananas Eaten/Year</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <section class="history-section" id="history">
+    <div class="row gy-5">
+      <div class="col-lg-4">
+        <div class="section-tag">Chapter One</div>
+        <h2 class="section-title">A Journey<br/>Through <span class="accent">Time</span></h2>
+        <p style="color:rgba(255,248,231,.6);font-size:1.1rem;line-height:1.8;font-weight:300;">
+          The banana's story is a saga of human migration, agricultural genius, and botanical wonder — 
+          woven across continents and millennia.
+        </p>
+      </div>
+      <div class="col-lg-7 offset-lg-1">
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-year">8000 BC</div>
+            <div class="timeline-text">
+              <h4>Papua New Guinea — The Birthplace</h4>
+              <p>The first banana plants were cultivated in the highlands of Papua New Guinea, making the banana one of the earliest cultivated fruits in human history.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">6000 BC</div>
+            <div class="timeline-text">
+              <h4>Spreading Across Asia</h4>
+              <p>Cultivation spreads to India and Southeast Asia. Ancient Sanskrit texts reference the banana as a food of the wise, calling it "kela" — a term still used today.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">327 BC</div>
+            <div class="timeline-text">
+              <h4>Alexander the Great's Discovery</h4>
+              <p>Alexander encounters bananas in India and is so entranced that his soldiers carry the fruit back westward, introducing it to the Mediterranean world.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">650 AD</div>
+            <div class="timeline-text">
+              <h4>Arab Traders Carry It West</h4>
+              <p>Arab merchants spread banana cultivation across the Middle East and North Africa, giving the fruit its modern name — derived from the Arabic "banan," meaning finger.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1516</div>
+            <div class="timeline-text">
+              <h4>First Bananas in the Americas</h4>
+              <p>Portuguese sailors carry banana shoots from West Africa to the Americas, planting them in the Caribbean. The tropical climate proves paradise for the plant.</p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-year">1870s</div>
+            <div class="timeline-text">
+              <h4>The Commercial Revolution</h4>
+              <p>Captain Lorenzo Dow Baker imports bananas to Boston, sparking a commercial revolution. Within decades, the banana becomes the world's most traded fruit.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section class="card-section">
+    <div class="container-fluid px-0">
+      <div class="section-tag mb-4">Did You Know?</div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="banana-card">
+            <span class="card-icon">🌿</span>
+            <h5>Not a Tree — A Herb</h5>
+            <p>The banana plant is actually the world's largest herbaceous plant. What looks like a trunk is a "pseudostem" — tightly packed leaf bases, not wood.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="banana-card">
+            <span class="card-icon">🧬</span>
+            <h5>50% Human DNA</h5>
+            <p>Humans share approximately 50% of their DNA with banana plants. This astonishing genetic overlap speaks to the deep unity of all life on Earth.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="banana-card">
+            <span class="card-icon">☢️</span>
+            <h5>Naturally Radioactive</h5>
+            <p>Bananas contain potassium-40, a naturally occurring radioactive isotope. Scientists even measure radiation exposure in "banana equivalent doses" (BED).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section class="quote-block">
+    <blockquote class="big-quote">
+      "The banana is the fruit that fed civilisations, <span>crossed oceans</span>, 
+      and sweetened the lives of billions — yet its story is only just beginning."
+    </blockquote>
+    <p class="quote-source">— Botanical History of the Musa Genus</p>
+  </section>
+
+  <!-- PAGE NAV -->
+  <div class="page-nav">
+    <a href="index.html" class="page-dot current">
+      <span class="num">01</span> Origins
+    </a>
+    <a href="nutrition.html" class="page-dot">
+      <span class="num">02</span> Nutrition
+    </a>
+    <a href="culture.html" class="page-dot">
+      <span class="num">03</span> Culture
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Banana World</span>
+    <span>Page 1 of 3</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Intersection observer for timeline animations
+    const items = document.querySelectorAll('.timeline-item');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 120);
+        }
+      });
+    }, { threshold: .15 });
+    items.forEach(el => observer.observe(el));
+
+    // Animated counters
+    function animateCounter(el, target, suffix = '') {
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.floor(current).toLocaleString() + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 20);
+    }
+
+    const statsObs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        animateCounter(document.querySelectorAll('.stat-number')[0], 10000, '');
+        animateCounter(document.querySelectorAll('.stat-number')[1], 1000, '+');
+        animateCounter(document.querySelectorAll('.stat-number')[2], 150, '');
+        animateCounter(document.querySelectorAll('.stat-number')[3], 100, 'B');
+        statsObs.disconnect();
+      }
+    });
+    statsObs.observe(document.querySelector('.stats-strip'));
+  </script>
+</body>
+</html>

@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banana World — Culture</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Fira+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink:       #1C1209;
+      --paper:     #F5EDD8;
+      --warm-tan:  #E8D5B0;
+      --rust:      #C1440E;
+      --mustard:   #D4A017;
+      --deep-blue: #1B3A5C;
+      --sage:      #6B7F5E;
+      --blush:     #E8A87C;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Libre Baskerville', serif;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      padding: 0 4vw;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 3px solid var(--rust);
+    }
+
+    .nav-logo {
+      font-family: 'Abril Fatface', cursive;
+      font-size: 1.6rem;
+      color: var(--paper);
+      text-decoration: none;
+      letter-spacing: .02em;
+      padding: 1rem 0;
+    }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: rgba(245,237,216,.5);
+      text-decoration: none;
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 1.2rem 0;
+      display: block;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color .3s, border-color .3s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--paper); border-color: var(--rust); }
+
+    /* ── MAGAZINE MASTHEAD ── */
+    .masthead {
+      position: relative; z-index: 2;
+      background: var(--ink);
+      padding: 5rem 8vw 4rem;
+      overflow: hidden;
+    }
+
+    .masthead-bg-text {
+      position: absolute;
+      top: 50%; right: -2vw;
+      transform: translateY(-50%);
+      font-family: 'Abril Fatface', cursive;
+      font-size: clamp(12rem, 22vw, 22rem);
+      color: rgba(255,255,255,.03);
+      user-select: none;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .masthead-meta {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1.5rem;
+    }
+
+    .masthead-title {
+      font-family: 'Abril Fatface', cursive;
+      font-size: clamp(4rem, 9vw, 9rem);
+      line-height: .95;
+      color: var(--paper);
+      margin-bottom: 2rem;
+    }
+
+    .masthead-title .accent { color: var(--mustard); }
+
+    .masthead-subtitle {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: rgba(245,237,216,.6);
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    .issue-badge {
+      position: absolute; top: 3rem; right: 8vw;
+      width: 90px; height: 90px;
+      background: var(--rust);
+      border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Abril Fatface', cursive;
+      animation: rotateBadge 12s linear infinite;
+    }
+    .issue-badge .big { font-size: 1.8rem; color: var(--paper); line-height: 1; }
+    .issue-badge .small { font-size: .55rem; color: rgba(245,237,216,.8); letter-spacing: .1em; text-transform: uppercase; }
+
+    @keyframes rotateBadge {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── PULL QUOTE STRIP ── */
+    .pull-strip {
+      position: relative; z-index: 2;
+      background: var(--rust);
+      padding: 2rem 8vw;
+      overflow: hidden;
+    }
+
+    .ticker-wrap { overflow: hidden; white-space: nowrap; }
+    .ticker-content {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+      font-family: 'Abril Fatface', cursive;
+      font-size: 1.2rem;
+      color: var(--paper);
+      letter-spacing: .05em;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .ticker-sep { margin: 0 3rem; color: rgba(245,237,216,.4); }
+
+    /* ── EDITORIAL GRID ── */
+    .editorial-section {
+      position: relative; z-index: 2;
+      padding: 6rem 8vw;
+    }
+
+    .section-rule {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .rule-line { flex: 1; height: 1px; background: var(--ink); }
+    .rule-title {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rust);
+      white-space: nowrap;
+    }
+
+    /* Feature article card */
+    .feature-card {
+      position: relative;
+      background: var(--warm-tan);
+      padding: 3rem;
+      height: 100%;
+      border-left: 4px solid var(--rust);
+      transition: transform .3s;
+    }
+    .feature-card:hover { transform: translateY(-4px); }
+
+    .feature-tag {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1rem;
+    }
+
+    .feature-title {
+      font-family: 'Abril Fatface', cursive;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      color: var(--ink);
+    }
+
+    .feature-body {
+      font-size: .95rem;
+      line-height: 1.85;
+      color: rgba(28,18,9,.7);
+      font-weight: 400;
+    }
+
+    .feature-emoji {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Small article cards */
+    .article-card {
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(28,18,9,.12);
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      opacity: 0; transform: translateX(20px);
+      transition: opacity .6s, transform .6s;
+    }
+    .article-card.visible { opacity: 1; transform: translateX(0); }
+
+    .article-num {
+      font-family: 'Abril Fatface', cursive;
+      font-size: 2.5rem;
+      color: var(--mustard);
+      line-height: 1;
+      min-width: 50px;
+    }
+    .article-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: .5rem;
+    }
+    .article-excerpt {
+      font-size: .875rem;
+      line-height: 1.7;
+      color: rgba(28,18,9,.6);
+    }
+
+    /* ── WORLD MAP SECTION ── */
+    .map-section {
+      position: relative; z-index: 2;
+      background: var(--deep-blue);
+      padding: 6rem 8vw;
+      overflow: hidden;
+    }
+
+    .map-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent 0, transparent 30px,
+        rgba(255,255,255,.02) 30px, rgba(255,255,255,.02) 31px
+      ),
+      repeating-linear-gradient(
+        90deg, transparent 0, transparent 30px,
+        rgba(255,255,255,.02) 30px, rgba(255,255,255,.02) 31px
+      );
+    }
+
+    .map-title {
+      font-family: 'Abril Fatface', cursive;
+      font-size: clamp(2rem, 5vw, 4rem);
+      color: var(--paper);
+      margin-bottom: 3rem;
+      position: relative; z-index: 2;
+    }
+
+    .region-card {
+      position: relative; z-index: 2;
+      padding: 2rem;
+      border: 1px solid rgba(245,237,216,.12);
+      border-top: 3px solid var(--mustard);
+      margin-bottom: 1.5rem;
+      transition: background .3s;
+    }
+    .region-card:hover { background: rgba(245,237,216,.05); }
+
+    .region-name {
+      font-family: 'Abril Fatface', cursive;
+      font-size: 1.4rem;
+      color: var(--mustard);
+      margin-bottom: .3rem;
+    }
+    .region-detail {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(245,237,216,.4);
+      margin-bottom: .8rem;
+    }
+    .region-body {
+      font-size: .9rem;
+      line-height: 1.65;
+      color: rgba(245,237,216,.65);
+    }
+
+    /* ── RECIPES STRIP ── */
+    .recipes-section {
+      position: relative; z-index: 2;
+      padding: 6rem 8vw;
+      background: var(--ink);
+    }
+
+    .recipe-title-big {
+      font-family: 'Abril Fatface', cursive;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      color: var(--paper);
+      margin-bottom: 3rem;
+    }
+    .recipe-title-big .accent { color: var(--mustard); }
+
+    .recipe-item {
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(245,237,216,.08);
+      display: grid; grid-template-columns: 60px 1fr auto;
+      gap: 1.5rem; align-items: center;
+      transition: background .3s;
+      cursor: pointer;
+    }
+    .recipe-item:hover { background: rgba(245,237,216,.03); }
+
+    .recipe-emoji { font-size: 2rem; text-align: center; }
+    .recipe-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem;
+      color: var(--paper);
+      margin-bottom: .2rem;
+    }
+    .recipe-desc {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .8rem;
+      color: rgba(245,237,216,.4);
+    }
+    .recipe-origin {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--rust);
+      white-space: nowrap;
+    }
+
+    /* ── CLOSING ESSAY ── */
+    .essay-section {
+      position: relative; z-index: 2;
+      padding: 8rem 8vw;
+      max-width: 800px;
+    }
+
+    .essay-drop-cap::first-letter {
+      font-family: 'Abril Fatface', cursive;
+      font-size: 5rem;
+      line-height: .8;
+      float: left;
+      margin: .05em .15em 0 0;
+      color: var(--rust);
+    }
+
+    .essay-section p {
+      font-size: 1.1rem;
+      line-height: 1.95;
+      color: rgba(28,18,9,.8);
+      margin-bottom: 1.8rem;
+    }
+
+    .essay-section blockquote {
+      border-left: 4px solid var(--mustard);
+      padding-left: 2rem;
+      margin: 2.5rem 0;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--ink);
+    }
+
+    /* ── PAGE NAV ── */
+    .page-nav {
+      position: relative; z-index: 2;
+      display: flex; justify-content: center; gap: 1rem;
+      padding: 3rem 0 5rem;
+      background: var(--paper);
+    }
+    .page-dot {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .8rem 1.8rem;
+      border: 2px solid rgba(28,18,9,.15);
+      text-decoration: none;
+      color: rgba(28,18,9,.5);
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: all .3s;
+    }
+    .page-dot:hover { border-color: var(--rust); color: var(--rust); }
+    .page-dot.current { border-color: var(--rust); color: var(--rust); background: rgba(193,68,14,.06); }
+    .page-dot .num { font-family: 'Abril Fatface', cursive; font-size: 1.2rem; }
+
+    footer {
+      position: relative; z-index: 2;
+      background: var(--ink);
+      padding: 2rem 8vw;
+      display: flex; justify-content: space-between; align-items: center;
+      color: rgba(245,237,216,.3);
+      font-family: 'Fira Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">🍌 Banana</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Origins</a></li>
+      <li><a href="nutrition.html">Nutrition</a></li>
+      <li><a href="culture.html" class="active">Culture</a></li>
+    </ul>
+  </nav>
+
+  <!-- MASTHEAD -->
+  <section class="masthead">
+    <div class="masthead-bg-text">🍌</div>
+    <div class="masthead-meta">The Banana Review — Vol. III · Culture & Society</div>
+    <h1 class="masthead-title">
+      Banana<br/>
+      <span class="accent">Culture</span>
+    </h1>
+    <p class="masthead-subtitle">
+      How a tropical fruit conquered global kitchens, inspired revolutions, 
+      shaped economies, and slipped its way into the very heart of human civilisation.
+    </p>
+    <div class="issue-badge">
+      <span class="big">03</span>
+      <span class="small">Culture</span>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="pull-strip">
+    <div class="ticker-wrap">
+      <span class="ticker-content">
+        🍌 Cavendish &nbsp;<span class="ticker-sep">·</span>&nbsp; Plantain &nbsp;<span class="ticker-sep">·</span>&nbsp; Musa Paradisiaca &nbsp;<span class="ticker-sep">·</span>&nbsp; Foster's Banana &nbsp;<span class="ticker-sep">·</span>&nbsp; Banana Republic &nbsp;<span class="ticker-sep">·</span>&nbsp; Bananas Foster &nbsp;<span class="ticker-sep">·</span>&nbsp; Warhol's Banana &nbsp;<span class="ticker-sep">·</span>&nbsp; Banana Leaf Rice &nbsp;<span class="ticker-sep">·</span>&nbsp; Chiquita Brands &nbsp;<span class="ticker-sep">·</span>&nbsp; 🍌 Cavendish &nbsp;<span class="ticker-sep">·</span>&nbsp; Plantain &nbsp;<span class="ticker-sep">·</span>&nbsp; Musa Paradisiaca &nbsp;<span class="ticker-sep">·</span>&nbsp; Foster's Banana &nbsp;<span class="ticker-sep">·</span>&nbsp; Banana Republic &nbsp;<span class="ticker-sep">·</span>&nbsp; Bananas Foster &nbsp;<span class="ticker-sep">·</span>&nbsp; Warhol's Banana &nbsp;<span class="ticker-sep">·</span>&nbsp; Banana Leaf Rice &nbsp;<span class="ticker-sep">·</span>&nbsp; Chiquita Brands &nbsp;
+      </span>
+    </div>
+  </div>
+
+  <!-- EDITORIAL FEATURES -->
+  <section class="editorial-section">
+    <div class="section-rule">
+      <div class="rule-line"></div>
+      <div class="rule-title">Feature Articles</div>
+      <div class="rule-line"></div>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-lg-5">
+        <div class="feature-card">
+          <span class="feature-emoji">🎨</span>
+          <div class="feature-tag">Art & Pop Culture</div>
+          <h2 class="feature-title">When Warhol Peeled Open the World</h2>
+          <p class="feature-body">
+            In 1967, Andy Warhol designed a banana for the cover of The Velvet Underground's debut album. 
+            The instruction on the original sleeve read "Peel slowly and see" — revealing a flesh-pink banana beneath. 
+            That single image transformed a humble fruit into an icon of avant-garde art, forever cementing the banana's 
+            place in cultural history. The image endures as one of the most recognisable album covers ever printed.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="feature-card" style="border-left-color: var(--deep-blue);">
+          <span class="feature-emoji">⚡</span>
+          <div class="feature-tag">Political Economy</div>
+          <h2 class="feature-title">The Banana Republics: Power, Fruit & Empire</h2>
+          <p class="feature-body">
+            The term "Banana Republic" — coined by American author O. Henry in 1904 — describes nations whose 
+            governments were effectively controlled by foreign fruit corporations. The United Fruit Company (now Chiquita) 
+            wielded extraordinary political power across Central America, funding coups, manipulating governments, and 
+            controlling vast swaths of land and infrastructure. The 1954 Guatemalan coup d'état, orchestrated partly at 
+            the company's behest, remains one of history's most dramatic examples of corporate political power. 
+            The banana's sweetness masked a bitter political legacy that shaped an entire region.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Small articles -->
+    <div class="row g-0">
+      <div class="col-lg-6 pe-lg-5">
+        <div class="section-rule mt-2 mb-0">
+          <div class="rule-line"></div>
+          <div class="rule-title">Further Reading</div>
+          <div class="rule-line"></div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">I</div>
+          <div>
+            <div class="article-title">The Gros Michel Extinction</div>
+            <p class="article-excerpt">Before the Cavendish, the world ate the Gros Michel — a creamier, richer variety wiped out by Panama disease in the 1950s. Scientists warn history may repeat itself.</p>
+          </div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">II</div>
+          <div>
+            <div class="article-title">Sacred Fruit of the Tropics</div>
+            <p class="article-excerpt">In Hindu tradition, banana plants are considered sacred to Lord Vishnu. Banana leaves serve as plates during ceremonies; the fruit features in every auspicious ritual.</p>
+          </div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">III</div>
+          <div>
+            <div class="article-title">The Slip Joke's Long History</div>
+            <p class="article-excerpt">The banana peel pratfall is one of comedy's oldest gags, documented in newspapers as early as 1872. Slapstick owes much of its legacy to this humble fruit.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 ps-lg-5 border-lg-start">
+        <div class="section-rule mt-2 mb-0">
+          <div class="rule-line"></div>
+          <div class="rule-title">Short Takes</div>
+          <div class="rule-line"></div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">IV</div>
+          <div>
+            <div class="article-title">Banana Leaf Dining</div>
+            <p class="article-excerpt">Across South and Southeast Asia, banana leaves serve as biodegradable plates for elaborate meals. The leaf imparts a subtle flavour and carries antimicrobial properties.</p>
+          </div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">V</div>
+          <div>
+            <div class="article-title">The €120,000 Banana</div>
+            <p class="article-excerpt">In 2019, Maurizio Cattelan duct-taped a banana to a wall at Art Basel Miami and titled it "Comedian." It sold for $120,000 — and was later eaten by another artist.</p>
+          </div>
+        </div>
+        <div class="article-card">
+          <div class="article-num">VI</div>
+          <div>
+            <div class="article-title">Banana Fibre Fashion</div>
+            <p class="article-excerpt">Banana stem fibres are woven into luxurious textiles in Japan (Kijoka-bashōfu) and the Philippines (t'nalak). Designers increasingly champion these as sustainable luxury materials.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORLD REGIONS -->
+  <section class="map-section">
+    <h2 class="map-title">Bananas<br/>Around the World</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-xl-3">
+        <div class="region-card">
+          <div class="region-name">West Africa</div>
+          <div class="region-detail">The Plantain Heartland</div>
+          <p class="region-body">Plantains are a staple starch across Nigeria, Ghana, and Cameroon — fried as kelewele, boiled with peanut soup, or dried into chips. Cuisine here is unimaginable without them.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="region-card">
+          <div class="region-name">South India</div>
+          <div class="region-detail">Sacred & Culinary</div>
+          <p class="region-body">Tamil Nadu's banana leaf meal (sadhya) is a ritual as much as a meal. Kerala produces hundreds of banana varieties; the Nendran plantain is prized for its chips and halwa.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="region-card">
+          <div class="region-name">Central America</div>
+          <div class="region-detail">Industrial Origin</div>
+          <p class="region-body">Guatemala, Honduras, and Costa Rica supply much of the world's Cavendish. The landscape — and political history — of these nations was literally shaped by banana cultivation.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-xl-3">
+        <div class="region-card">
+          <div class="region-name">Southeast Asia</div>
+          <div class="region-detail">1,000 Varieties</div>
+          <p class="region-body">The Philippines, Indonesia, and Thailand host extraordinary banana biodiversity. Saba, Lakatan, and Señorita varieties each carry distinct flavours, uses, and cultural meanings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECIPES -->
+  <section class="recipes-section">
+    <h2 class="recipe-title-big">Global<br/><span class="accent">Recipes</span></h2>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="recipe-item">
+          <div class="recipe-emoji">🍮</div>
+          <div>
+            <div class="recipe-name">Bananas Foster</div>
+            <div class="recipe-desc">Caramelised bananas flambéed in rum with brown sugar & butter</div>
+          </div>
+          <div class="recipe-origin">New Orleans</div>
+        </div>
+        <div class="recipe-item">
+          <div class="recipe-emoji">🍞</div>
+          <div>
+            <div class="recipe-name">Banana Bread</div>
+            <div class="recipe-desc">Overripe bananas baked into a moist, spiced loaf</div>
+          </div>
+          <div class="recipe-origin">Global</div>
+        </div>
+        <div class="recipe-item">
+          <div class="recipe-emoji">🍛</div>
+          <div>
+            <div class="recipe-name">Unripe Banana Curry</div>
+            <div class="recipe-desc">Green bananas cooked in coconut milk with mustard seeds</div>
+          </div>
+          <div class="recipe-origin">Kerala, India</div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="recipe-item">
+          <div class="recipe-emoji">🫔</div>
+          <div>
+            <div class="recipe-name">Kelewele</div>
+            <div class="recipe-desc">Spiced plantain cubes fried golden in groundnut oil</div>
+          </div>
+          <div class="recipe-origin">Ghana</div>
+        </div>
+        <div class="recipe-item">
+          <div class="recipe-emoji">🍡</div>
+          <div>
+            <div class="recipe-name">Turon</div>
+            <div class="recipe-desc">Banana & jackfruit wrapped in lumpia and deep fried</div>
+          </div>
+          <div class="recipe-origin">Philippines</div>
+        </div>
+        <div class="recipe-item">
+          <div class="recipe-emoji">🥣</div>
+          <div>
+            <div class="recipe-name">Matoke</div>
+            <div class="recipe-desc">East African steamed green bananas — a national dish</div>
+          </div>
+          <div class="recipe-origin">Uganda</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING ESSAY -->
+  <section class="essay-section">
+    <div class="section-rule mb-4">
+      <div class="rule-line"></div>
+      <div class="rule-title">Editor's Note</div>
+      <div class="rule-line"></div>
+    </div>
+    <p class="essay-drop-cap">
+      There is no fruit quite like the banana. It has nourished empires and toppled governments; 
+      it has graced the walls of the world's most prestigious galleries and been eaten roadside 
+      for a few cents. It wraps itself in the symbolic language of both comedy and tragedy.
+    </p>
+    <blockquote>
+      "The banana is at once the world's most humble fruit and its most consequential."
+    </blockquote>
+    <p>
+      To study the banana is to study humanity itself — our migrations, our hungers, our politics, 
+      our art, and our capacity to find meaning in the most ordinary things. From the hills of Papua New Guinea 
+      to the stages of Carnegie Hall, the banana endures. Yellow, curved, improbable — and utterly irreplaceable.
+    </p>
+  </section>
+
+  <!-- PAGE NAV -->
+  <div class="page-nav">
+    <a href="index.html" class="page-dot">
+      <span class="num">01</span> Origins
+    </a>
+    <a href="nutrition.html" class="page-dot">
+      <span class="num">02</span> Nutrition
+    </a>
+    <a href="culture.html" class="page-dot current">
+      <span class="num">03</span> Culture
+    </a>
+  </div>
+
+  <footer>
+    <span>© 2025 Banana World · All Rights Reserved</span>
+    <span>Page 3 of 3</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Animate article cards
+    const articleObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 100);
+        }
+      });
+    }, { threshold: .2 });
+    document.querySelectorAll('.article-card').forEach(el => articleObs.observe(el));
+
+    // Recipe hover ripple
+    document.querySelectorAll('.recipe-item').forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.querySelector('.recipe-emoji').style.transform = 'scale(1.3) rotate(10deg)';
+        this.querySelector('.recipe-emoji').style.transition = 'transform .3s';
+      });
+      item.addEventListener('mouseleave', function() {
+        this.querySelector('.recipe-emoji').style.transform = 'scale(1) rotate(0deg)';
+      });
+    });
+  </script>
+</body>
+</html>

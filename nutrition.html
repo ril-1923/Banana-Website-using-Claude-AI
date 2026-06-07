@@ -1,0 +1,653 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banana World — Nutrition</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --neon-yellow: #FFEE00;
+      --neon-green:  #39FF14;
+      --neon-pink:   #FF2D9B;
+      --bg-dark:     #0A0A0F;
+      --bg-card:     #111118;
+      --bg-panel:    #0E0E16;
+      --text-main:   #E8E8FF;
+      --text-dim:    rgba(232,232,255,.45);
+      --grid-line:   rgba(255,238,0,.06);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Grid texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Glow blobs */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 40% 40% at 10% 20%, rgba(255,238,0,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 50% at 90% 80%, rgba(57,255,20,.05) 0%, transparent 60%),
+        radial-gradient(ellipse 25% 35% at 50% 50%, rgba(255,45,155,.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,10,15,.9);
+      border-bottom: 1px solid rgba(255,238,0,.12);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--neon-yellow);
+      text-decoration: none;
+      letter-spacing: .1em;
+      text-shadow: 0 0 20px rgba(255,238,0,.4);
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: color .3s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--neon-yellow); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 2;
+      padding: 14rem 6vw 6rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+    }
+
+    .hero-label {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      color: var(--neon-green);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 10vw, 10rem);
+      line-height: .95;
+      color: var(--text-main);
+      letter-spacing: .02em;
+    }
+
+    .hero-title .yellow { color: var(--neon-yellow); text-shadow: 0 0 40px rgba(255,238,0,.3); }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .data-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: rgba(255,238,0,.08);
+      border: 1px solid rgba(255,238,0,.2);
+      padding: .5rem 1.2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: .75rem;
+      color: var(--neon-yellow);
+      letter-spacing: .08em;
+    }
+
+    .pulse-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: 0 0 8px var(--neon-green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+    /* ── MACROS ── */
+    .macros-section {
+      position: relative; z-index: 2;
+      padding: 5rem 6vw;
+    }
+
+    .section-header {
+      display: flex; align-items: baseline; gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .section-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      letter-spacing: .05em;
+    }
+    .section-header span {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      color: var(--text-dim);
+      letter-spacing: .2em;
+    }
+
+    /* Macro Bar Chart */
+    .macro-chart { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .macro-row { display: grid; grid-template-columns: 130px 1fr 80px; align-items: center; gap: 1.5rem; }
+
+    .macro-name {
+      font-family: 'Space Mono', monospace;
+      font-size: .8rem;
+      letter-spacing: .05em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .macro-bar-track {
+      height: 10px;
+      background: rgba(255,255,255,.06);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    .macro-value {
+      font-family: 'Space Mono', monospace;
+      font-size: .85rem;
+      color: var(--text-main);
+      text-align: right;
+    }
+
+    /* ── VITAMIN GRID ── */
+    .vitamins-section {
+      position: relative; z-index: 2;
+      padding: 5rem 6vw;
+      background: var(--bg-panel);
+      border-top: 1px solid rgba(255,238,0,.06);
+      border-bottom: 1px solid rgba(255,238,0,.06);
+    }
+
+    .vitamin-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 2rem 1.5rem;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+      height: 100%;
+    }
+    .vitamin-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      transition: opacity .3s;
+      opacity: 0;
+    }
+    .vitamin-card:hover { border-color: rgba(255,238,0,.25); transform: translateY(-4px); }
+    .vitamin-card:hover::before { opacity: 1; }
+
+    .vit-code {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+    .vit-name {
+      font-family: 'Space Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+    .vit-amount {
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: .3rem;
+    }
+    .vit-rdi {
+      font-size: .75rem;
+      color: var(--text-dim);
+    }
+    .vit-bar {
+      margin-top: 1rem;
+      height: 3px;
+      background: rgba(255,255,255,.06);
+      border-radius: 2px;
+    }
+    .vit-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width 1.4s 0.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* Color variants */
+    .c-yellow { color: var(--neon-yellow); }
+    .c-green  { color: var(--neon-green); }
+    .c-pink   { color: var(--neon-pink); }
+    .c-blue   { color: #00C8FF; }
+    .c-orange { color: #FF8C00; }
+    .c-purple { color: #C084FC; }
+
+    .bg-yellow { background: var(--neon-yellow); }
+    .bg-green  { background: var(--neon-green); }
+    .bg-pink   { background: var(--neon-pink); }
+    .bg-blue   { background: #00C8FF; }
+    .bg-orange { background: #FF8C00; }
+    .bg-purple { background: #C084FC; }
+
+    .vcard-yellow::before { background: var(--neon-yellow); box-shadow: 0 0 15px rgba(255,238,0,.5); }
+    .vcard-green::before  { background: var(--neon-green);  box-shadow: 0 0 15px rgba(57,255,20,.5); }
+    .vcard-pink::before   { background: var(--neon-pink);   box-shadow: 0 0 15px rgba(255,45,155,.5); }
+    .vcard-blue::before   { background: #00C8FF;             box-shadow: 0 0 15px rgba(0,200,255,.5); }
+    .vcard-orange::before { background: #FF8C00;             box-shadow: 0 0 15px rgba(255,140,0,.5); }
+    .vcard-purple::before { background: #C084FC;             box-shadow: 0 0 15px rgba(192,132,252,.5); }
+
+    /* ── BIG FACT ── */
+    .fact-section {
+      position: relative; z-index: 2;
+      padding: 7rem 6vw;
+      text-align: center;
+    }
+    .fact-label {
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--neon-pink);
+      margin-bottom: 2rem;
+    }
+    .big-fact {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 14rem);
+      line-height: .9;
+      letter-spacing: .02em;
+    }
+    .big-fact .highlight {
+      color: var(--neon-yellow);
+      text-shadow: 0 0 60px rgba(255,238,0,.35);
+    }
+    .fact-sub {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── HEALTH BENEFITS ── */
+    .benefits-section {
+      position: relative; z-index: 2;
+      padding: 5rem 6vw;
+    }
+    .benefit-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s, transform .6s;
+    }
+    .benefit-row.visible { opacity: 1; transform: translateY(0); }
+
+    .benefit-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      line-height: 1;
+      color: rgba(255,238,0,.15);
+      min-width: 70px;
+      text-align: center;
+    }
+    .benefit-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: .05em;
+      margin-bottom: .5rem;
+      color: var(--text-main);
+    }
+    .benefit-body {
+      font-size: .95rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    /* ── PAGE NAV ── */
+    .page-nav {
+      position: relative; z-index: 2;
+      display: flex; justify-content: center; gap: 1rem;
+      padding: 3rem 0 5rem;
+    }
+    .page-dot {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .7rem 1.6rem;
+      border: 1px solid rgba(255,255,255,.1);
+      text-decoration: none;
+      color: var(--text-dim);
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: all .3s;
+    }
+    .page-dot:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+    .page-dot.current { border-color: var(--neon-yellow); color: var(--neon-yellow); background: rgba(255,238,0,.06); }
+    .page-dot .num { font-size: 1.1rem; font-weight: 700; }
+
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid rgba(255,255,255,.05);
+      padding: 2rem 6vw;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--text-dim);
+      font-family: 'Space Mono', monospace;
+      font-size: .7rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">🍌 BANANA</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Origins</a></li>
+      <li><a href="nutrition.html" class="active">Nutrition</a></li>
+      <li><a href="culture.html">Culture</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-label">// NUTRITIONAL_ANALYSIS.exe</div>
+      <h1 class="hero-title">
+        NUTRI<br/>
+        <span class="yellow">TION</span><br/>
+        DATA
+      </h1>
+    </div>
+    <div>
+      <p class="hero-desc">
+        A single medium banana (118g) is a precision-engineered package of macronutrients, 
+        micronutrients, and bioactive compounds — nature's most efficient energy delivery system.
+      </p>
+      <div class="data-tag">
+        <div class="pulse-dot"></div>
+        LIVE DATA — PER 100g SERVING
+      </div>
+    </div>
+  </section>
+
+  <!-- MACROS -->
+  <section class="macros-section">
+    <div class="section-header">
+      <h2>MACRONUTRIENTS</h2>
+      <span>// per 100g raw</span>
+    </div>
+    <div class="macro-chart" id="macroChart">
+      <div class="macro-row" data-pct="89">
+        <div class="macro-name">Calories</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-yellow" style="width:89%"></div></div>
+        <div class="macro-value c-yellow">89 kcal</div>
+      </div>
+      <div class="macro-row" data-pct="23">
+        <div class="macro-name">Carbs</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-yellow" style="width:23%"></div></div>
+        <div class="macro-value">23g</div>
+      </div>
+      <div class="macro-row" data-pct="11">
+        <div class="macro-name">Sugar</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-pink" style="width:11%"></div></div>
+        <div class="macro-value c-pink">12g</div>
+      </div>
+      <div class="macro-row" data-pct="2.6">
+        <div class="macro-name">Fibre</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-green" style="width:26%"></div></div>
+        <div class="macro-value c-green">2.6g</div>
+      </div>
+      <div class="macro-row" data-pct="1.1">
+        <div class="macro-name">Protein</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-blue" style="width:11%"></div></div>
+        <div class="macro-value c-blue">1.1g</div>
+      </div>
+      <div class="macro-row" data-pct="0.3">
+        <div class="macro-name">Fat</div>
+        <div class="macro-bar-track"><div class="macro-bar-fill bg-purple" style="width:3%"></div></div>
+        <div class="macro-value c-purple">0.3g</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VITAMINS -->
+  <section class="vitamins-section">
+    <div class="section-header">
+      <h2>MICRONUTRIENTS</h2>
+      <span>// vitamins & minerals</span>
+    </div>
+    <div class="row g-3" id="vitaminGrid">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-yellow">
+          <div class="vit-code c-yellow">B6</div>
+          <div class="vit-name">Pyridoxine</div>
+          <div class="vit-amount">0.37mg</div>
+          <div class="vit-rdi">28% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-yellow" data-w="28"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-green">
+          <div class="vit-code c-green">K</div>
+          <div class="vit-name">Potassium</div>
+          <div class="vit-amount">358mg</div>
+          <div class="vit-rdi">10% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-green" data-w="10"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-blue">
+          <div class="vit-code c-blue">C</div>
+          <div class="vit-name">Ascorbic Acid</div>
+          <div class="vit-amount">8.7mg</div>
+          <div class="vit-rdi">10% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-blue" data-w="10"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-orange">
+          <div class="vit-code c-orange">Mg</div>
+          <div class="vit-name">Magnesium</div>
+          <div class="vit-amount">27mg</div>
+          <div class="vit-rdi">6% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-orange" data-w="6"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-pink">
+          <div class="vit-code c-pink">B9</div>
+          <div class="vit-name">Folate</div>
+          <div class="vit-amount">20µg</div>
+          <div class="vit-rdi">5% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-pink" data-w="5"></div></div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="vitamin-card vcard-purple">
+          <div class="vit-code c-purple">Mn</div>
+          <div class="vit-name">Manganese</div>
+          <div class="vit-amount">0.27mg</div>
+          <div class="vit-rdi">13% RDI</div>
+          <div class="vit-bar"><div class="vit-bar-fill bg-purple" data-w="13"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIG FACT -->
+  <section class="fact-section">
+    <div class="fact-label">// POTASSIUM_ALERT</div>
+    <div class="big-fact">
+      <span class="highlight">422</span><br/>MG K⁺
+    </div>
+    <p class="fact-sub">
+      A single medium banana delivers 422mg of potassium — a critical electrolyte that regulates 
+      heartbeat, nerve signals, and muscle contractions.
+    </p>
+  </section>
+
+  <!-- HEALTH BENEFITS -->
+  <section class="benefits-section">
+    <div class="section-header">
+      <h2>HEALTH PROTOCOLS</h2>
+      <span>// scientifically validated</span>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-num">01</div>
+      <div>
+        <div class="benefit-title c-yellow">ENERGY OPTIMISATION</div>
+        <p class="benefit-body">Three natural sugars — sucrose, fructose, and glucose — combined with fibre give sustained, crash-free energy. Athletes rely on bananas for pre- and mid-competition fuel.</p>
+      </div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-num">02</div>
+      <div>
+        <div class="benefit-title c-green">GUT MICROBIOME SUPPORT</div>
+        <p class="benefit-body">Unripe bananas are rich in resistant starch, acting as a prebiotic that feeds beneficial gut bacteria, improving digestive health and immune function.</p>
+      </div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-num">03</div>
+      <div>
+        <div class="benefit-title c-blue">CARDIAC PROTECTION</div>
+        <p class="benefit-body">High potassium paired with low sodium helps maintain healthy blood pressure. Regular consumption is associated with a reduced risk of cardiovascular disease.</p>
+      </div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-num">04</div>
+      <div>
+        <div class="benefit-title c-pink">MOOD REGULATION</div>
+        <p class="benefit-body">Bananas contain tryptophan, which the body converts to serotonin. Combined with Vitamin B6, they naturally support mood stability and cognitive function.</p>
+      </div>
+    </div>
+
+    <div class="benefit-row">
+      <div class="benefit-num">05</div>
+      <div>
+        <div class="benefit-title c-purple">ANTIOXIDANT DEFENCE</div>
+        <p class="benefit-body">Rich in dopamine and catechins — powerful antioxidants linked to reduced risk of heart disease and degenerative diseases. Their concentration increases as bananas ripen.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE NAV -->
+  <div class="page-nav">
+    <a href="index.html" class="page-dot">
+      <span class="num">01</span> Origins
+    </a>
+    <a href="nutrition.html" class="page-dot current">
+      <span class="num">02</span> Nutrition
+    </a>
+    <a href="culture.html" class="page-dot">
+      <span class="num">03</span> Culture
+    </a>
+  </div>
+
+  <footer>
+    <span>© 2025 BANANA_WORLD.EXE</span>
+    <span>PAGE_02 / 03</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Animate bars on scroll
+    const animateBars = (selector, attr = 'data-w') => {
+      const els = document.querySelectorAll(selector);
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.querySelectorAll(`[${attr}]`).forEach(bar => {
+              bar.style.width = bar.getAttribute(attr) + '%';
+            });
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: .3 });
+      els.forEach(el => obs.observe(el));
+    };
+
+    animateBars('#macroChart');
+    animateBars('#vitaminGrid', 'data-w');
+
+    // Benefit rows
+    const benefitObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 100);
+        }
+      });
+    }, { threshold: .15 });
+    document.querySelectorAll('.benefit-row').forEach(el => benefitObs.observe(el));
+
+    // Vitamin bar individual animation
+    const vitObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('[data-w]').forEach(bar => {
+            bar.style.width = bar.getAttribute('data-w') + '%';
+          });
+        }
+      });
+    }, { threshold: .2 });
+    document.querySelectorAll('.vitamin-card').forEach(c => vitObs.observe(c));
+  </script>
+</body>
+</html>
